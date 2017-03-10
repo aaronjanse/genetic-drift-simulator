@@ -4,7 +4,8 @@ canvas.width = window.innerWidth * 2
 
 var ctx = canvas.getContext("2d")
 
-ctx.strokeStyle = "rgba(0, 1, 1, 0)"
+ctx.strokeStyle = "#000000"
+ctx.lineWidth = 2
 
 var simulator_interval_id
 
@@ -206,7 +207,7 @@ function simulate_step() {
 }
 
 function render() {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
 
 	var width_per_cell = canvas.width / population_size
 
@@ -218,6 +219,7 @@ function render() {
 		ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
 
 		var x = width_per_cell * i
-		ctx.fillRect(x, 0, width_per_cell + 2, canvas.height);
+		ctx.fillRect(x, 0, width_per_cell + 2, canvas.height)
+		ctx.strokeRect(x, 0, width_per_cell + 2, canvas.height)
 	}
 }
