@@ -218,7 +218,7 @@ function render() {
 
 		ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
 
-		var x = width_per_cell * i
+		var x = Math.floor(width_per_cell * i)
 		ctx.fillRect(x, 0, width_per_cell + 2, canvas.height)
 		ctx.strokeRect(x, 0, width_per_cell + 2, canvas.height)
 	}
