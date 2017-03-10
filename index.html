@@ -1,0 +1,66 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Genetic Drift Simulator</title>
+    <meta name="description" content="An online genetic drift simulator">
+    <meta name="author" content="Aaron Janse">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
+
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+    <canvas id="output"></canvas>
+
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Population size: </span>
+        <input id="population-size" type="number" pattern="[0-9]" class="form-control" placeholder="100" aria-describedby="basic-addon1">
+        <span class="input-group-btn">
+          <button id="run" class="btn btn-default" type="button">Run</button>
+        </span>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Total Number of Generations to Simulate: </span>
+        <input id="num-of-gens-to-sim" type="number" pattern="[0-9]" class="form-control" placeholder="Simulate Forever" aria-describedby="basic-addon1">
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Speed (generations/millisecond): </span>
+        <input id="speed" type="number" pattern="[0-9]" class="form-control" placeholder="10" aria-describedby="basic-addon1">
+    </div>
+
+    <button id="reset" type="button" class="btn btn-default">Reset</button>
+    <button id="pause" type="button" class="btn btn-default">Pause</button>
+
+    <div class="well">Generation #: <div id="gen-num">(not yet started)</div></div>
+
+    <p>
+      If you want to run it manually, set the number of generations to simulate every manual step:
+    </p>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Generations per Manual Step: </span>
+        <input id="gens-per-step" type="number" pattern="[0-9]" class="form-control" placeholder="1" aria-describedby="basic-addon1">
+        <span class="input-group-btn">
+          <button id="step" class="btn btn-default" type="button">Step</button>
+        </span>
+    </div>
+
+    <script src="js/main.js"></script>
+
+    <div id="credits">By Aaron Janse</div>
+</body>
+
+</html>
