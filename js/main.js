@@ -1,6 +1,6 @@
 var canvas = document.getElementById("output")
 
-canvas.width = window.innerWidth * 2
+canvas.width = window.innerWidth - 20
 
 var ctx = canvas.getContext("2d")
 
