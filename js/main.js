@@ -17,12 +17,19 @@ var number_of_gens_to_simulate = -1
 
 var running = false
 
+var one_left = false
+
 $("input#population-size, input#num-of-gens-to-sim, input#speed").on("keydown", function (e) {
 	if (e.keyCode === 13) { //checks whether the pressed key is "Enter"
 		if (running) {
 			stop()
 		} else {
 			reset_if_needed()
+
+			if (!running) {
+				reset()
+			}
+
 			run_auto()
 		}
 	}
@@ -30,6 +37,11 @@ $("input#population-size, input#num-of-gens-to-sim, input#speed").on("keydown", 
 
 $("button#run").click(function () {
 	reset_if_needed()
+
+	if (!running) {
+		reset()
+	}
+
 	run_auto()
 })
 
@@ -45,6 +57,8 @@ function reset() {
 		population.push(i)
 	}
 
+	one_left = false
+
 	render()
 }
 
@@ -53,7 +67,7 @@ function reset_if_needed() {
 
 	needs_reset = false
 
-	if (!running && (number_of_gens_to_simulate != -1 && generation_number < number_of_gens_to_simulate)) {
+	if (one_left) {
 		needs_reset = true
 	}
 
@@ -180,6 +194,10 @@ function simulate_step() {
 
 	$('div#gen-num').text(generation_number)
 	generation_number++
+
+	if (all_the_same) {
+		one_left = true
+	}
 
 	if (all_the_same || (number_of_gens_to_simulate != -1 && generation_number > number_of_gens_to_simulate)) {
 		// number_of_gens_to_simulate = generation_number
