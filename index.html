@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <canvas id="output"></canvas>
+    <canvas id="output" height="50"></canvas>
 
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Population size: </span>
@@ -45,10 +45,13 @@
     <button id="reset" type="button" class="btn btn-default">Reset</button>
     <button id="pause" type="button" class="btn btn-default">Pause</button>
 
-    <div class="well">Generation #: <div id="gen-num">(not yet started)</div></div>
+    <div class="well">
+        Generation #:
+        <div id="gen-num">(not yet started)</div>
+    </div>
 
     <p>
-      If you want to run it manually, set the number of generations to simulate every manual step:
+        If you want to run it manually, set the number of generations to simulate every manual step:
     </p>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Generations per Manual Step: </span>
@@ -58,6 +61,35 @@
         </span>
     </div>
 
+    <div class="well">
+        Phenotype Counts:
+        <div id="phenotype-counts">(not yet started)</div>
+    </div>
+
+    <script>
+        document.getElementById("output").width = window.innerWidth - 20
+    </script>
+
+    <p>
+        Other Settings:
+    </p>
+    <div class="checkbox">
+      <label>
+        <input id="sort-counts" type="checkbox" value="" checked>Sort phentotype counts
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="hide-extinct" type="checkbox" value="" checked>Hide extinct phenotypes (do not display in the list above)
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="separate-cells-w-lines" type="checkbox" value="" checked>Separate cells with lines
+      </label>
+    </div>
+
+    <script src="js/hidpi-canvas.min.js"></script>
     <script src="js/main.js"></script>
 
     <div id="credits">By Aaron Janse</div>

@@ -4,7 +4,7 @@ body {
 
 canvas#output {
   width: 100%;
-  height: 1cm;
+  /*height: 1cm;*/
   background-color: #ddd;
   /*border: 2px #ddd solid;*/
 }
@@ -14,9 +14,13 @@ body .input-group, body .well{
   margin-bottom: 5px;
 }
 
+div#phenotype-counts {
+  white-space: pre;
+}
+
 #credits {
-  position: absolute;
+  position: fixed;
 
   bottom: 10px;
-  left: 10px;
+  right: 10px;
 }

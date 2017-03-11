@@ -1,11 +1,14 @@
 var canvas = document.getElementById("output")
-
-canvas.width = window.innerWidth - 20
-
 var ctx = canvas.getContext("2d")
 
+var sort_counts = true
+
+var separate_with_lines = true
+
+var hide_extinct_counts = true
+
 ctx.strokeStyle = "#000000"
-ctx.lineWidth = 2
+ctx.lineWidth = 1
 
 var simulator_interval_id
 
@@ -86,10 +89,6 @@ function reset_if_needed() {
 		needs_reset = true
 	}
 
-	// if (number_of_gens_to_simulate != -1 && generation_number >= number_of_gens_to_simulate) {
-	// 	needs_reset = true
-	// }
-
 	if (needs_reset) {
 		reset()
 	}
@@ -168,12 +167,23 @@ function set_button_unpause() {
 function simulate_step() {
 	new_population = []
 
+	phenotype_counts = []
+
+	for (var i = 0; i < population_size; i++) {
+		phenotype_counts[i] = {
+			'id': i,
+			'count': 0
+		}
+	}
+
 	var all_the_same = true
 	var all_the_same_phenotype_so_far = -1
 	for (var i = 0; i < population_size; i++) {
 		var selected_idx = Math.floor(Math.random() * population_size)
 		var selected_phenotype = population[selected_idx]
 		new_population.push(selected_phenotype)
+
+		phenotype_counts[selected_phenotype].count += 1
 
 		if (all_the_same_phenotype_so_far == -1) {
 			all_the_same_phenotype_so_far = selected_phenotype
@@ -184,6 +194,12 @@ function simulate_step() {
 		}
 	}
 
+	if (sort_counts) {
+		phenotype_counts = phenotype_counts.sort(function (a, b) {
+			return b.count - a.count;
+		});
+	}
+
 	population = new_population
 
 	// sort for an organized visual effect
@@ -192,6 +208,30 @@ function simulate_step() {
 	});
 
 	render()
+
+	phenotype_counts_text = ''
+
+	// NOTE: population_size is used to represent the total number of original phentoypes
+	for (var i = 0; i < population_size; i++) {
+		var phenotype_id_and_count = phenotype_counts[i]
+
+		var id = phenotype_id_and_count.id
+		var count = phenotype_id_and_count.count
+
+		if (hide_extinct_counts && count == 0) {
+			continue
+		}
+
+		var number_str = '#' + id
+
+		phenotype_counts_text += 'Phentotype '
+		phenotype_counts_text += ('     ' + number_str).substring(number_str.length);
+		phenotype_counts_text += ': '
+		phenotype_counts_text += '' + count
+		phenotype_counts_text += '\n'
+	}
+
+	$('div#phenotype-counts').text(phenotype_counts_text)
 
 	$('div#gen-num').text(generation_number)
 	generation_number++
@@ -211,6 +251,8 @@ function render() {
 
 	var width_per_cell = canvas.width / population_size
 
+	var last_phenotype = population[0]
+
 	for (var i = 0; i < population_size; i++) {
 		var phenotype = population[i]
 
@@ -218,8 +260,44 @@ function render() {
 
 		ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
 
-		var x = Math.floor(width_per_cell * i)
+		var x = width_per_cell * i
+			// x = Math.floor(x)
+
 		ctx.fillRect(x, 0, width_per_cell + 2, canvas.height)
-		ctx.strokeRect(x, 0, width_per_cell + 2, canvas.height)
+
+		var last_was_different = last_phenotype != phenotype
+
+		if (last_was_different) {
+			ctx.lineWidth = 2
+		}
+
+		if (separate_with_lines || last_was_different) {
+			ctx.beginPath();
+			ctx.moveTo(x, 0);
+			ctx.lineTo(x, canvas.height);
+			ctx.stroke();
+			ctx.closePath()
+		}
+
+		if (last_was_different) {
+			ctx.lineWidth = 1
+		}
+
+		last_phenotype = phenotype
 	}
 }
+
+$('input#sort-counts').change(function () {
+	var ischecked = $(this).is(":checked")
+	sort_counts = ischecked
+});
+
+$('input#separate-cells-w-lines').change(function () {
+	var ischecked = $(this).is(":checked")
+	separate_with_lines = ischecked
+});
+
+$('input#hide-extinct').change(function () {
+	var ischecked = $(this).is(":checked")
+	hide_extinct_counts = ischecked
+});
