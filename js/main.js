@@ -243,7 +243,7 @@ function simulate_step() {
 		}
 
 		if (chart_counts_enabled) {
-			chart.data[id].dataPoints.push({
+			chart.options.data[id].dataPoints.push({
 				y: count
 			})
 		}
