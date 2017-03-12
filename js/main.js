@@ -1,4 +1,10 @@
 var canvas = document.getElementById("output")
+
+canvas.width = (window.innerWidth - 20) * 2
+canvas.height = 100
+canvas.style.width = (window.innerWidth - 20) + "px"
+canvas.style.height = "50px"
+
 var ctx = canvas.getContext("2d")
 
 var sort_counts = true
@@ -6,6 +12,10 @@ var sort_counts = true
 var separate_with_lines = true
 
 var hide_extinct_counts = true
+
+var make_colors_distinct = true
+
+var chart_counts_enabled = true
 
 ctx.strokeStyle = "#000000"
 ctx.lineWidth = 1
@@ -22,6 +32,8 @@ var number_of_gens_to_simulate = -1
 var running = false
 
 var one_left = false
+
+var do_graph = true
 
 $("input#population-size, input#num-of-gens-to-sim, input#speed").on("keydown", function (e) {
 	if (e.keyCode === 13) { //checks whether the pressed key is "Enter"
@@ -54,11 +66,19 @@ function reset() {
 
 	generation_number = 0
 
+	chart.options.data = []
+
 	population = []
 
 	// Fill it with one of every phenotype
 	for (var i = 0; i < population_size; i++) {
 		population.push(i)
+
+		chart.options.data.push({
+			type: "line",
+			markerType: "none",
+			dataPoints: []
+		});
 	}
 
 	one_left = false
@@ -222,6 +242,12 @@ function simulate_step() {
 			continue
 		}
 
+		if (chart_counts_enabled) {
+			chart.data[id].dataPoints.push({
+				y: count
+			})
+		}
+
 		var number_str = '#' + id
 
 		phenotype_counts_text += 'Phentotype '
@@ -247,6 +273,10 @@ function simulate_step() {
 }
 
 function render() {
+	if (chart_counts_enabled) {
+		chart.render();
+	}
+
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 
 	var width_per_cell = canvas.width / population_size
@@ -256,7 +286,14 @@ function render() {
 	for (var i = 0; i < population_size; i++) {
 		var phenotype = population[i]
 
-		var hue = 255 * (phenotype / population_size)
+		var ratio = phenotype / population_size
+
+		var hue;
+		if (make_colors_distinct) {
+			hue = (128 * (ratio + phenotype))
+		} else {
+			hue = 255 * ratio
+		}
 
 		ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
 
@@ -300,4 +337,16 @@ $('input#separate-cells-w-lines').change(function () {
 $('input#hide-extinct').change(function () {
 	var ischecked = $(this).is(":checked")
 	hide_extinct_counts = ischecked
+});
+
+$('input#make-colors-distinct').change(function () {
+	var ischecked = $(this).is(":checked")
+	make_colors_distinct = ischecked
+});
+
+$('input#chart-counts').change(function () {
+	var ischecked = $(this).is(":checked")
+	chart_counts_enabled = ischecked
+
+	$('#chartCanvas').toggle(chart_counts_enabled)
 });

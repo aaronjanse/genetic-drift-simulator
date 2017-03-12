@@ -24,6 +24,8 @@
 </head>
 
 <body>
+    <div id="chartCanvas" style="height: 410px;"></div>
+
     <canvas id="output" height="50"></canvas>
 
     <div class="input-group">
@@ -66,10 +68,6 @@
         <div id="phenotype-counts">(not yet started)</div>
     </div>
 
-    <script>
-        document.getElementById("output").width = window.innerWidth - 20
-    </script>
-
     <p>
         Other Settings:
     </p>
@@ -88,8 +86,22 @@
         <input id="separate-cells-w-lines" type="checkbox" value="" checked>Separate cells with lines
       </label>
     </div>
+    <div class="checkbox">
+      <label>
+        <input id="make-colors-distinct" type="checkbox" value="" checked>Make phenotype colors more distinct
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        <input id="chart-counts" type="checkbox" value="" checked>Make a graph of the phenotype counts (disable if you experience too much lag)
+      </label>
+    </div>
 
-    <script src="js/hidpi-canvas.min.js"></script>
+    <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <script src="js/setup_chart.js"></script>
+
+
     <script src="js/main.js"></script>
 
     <div id="credits">By Aaron Janse</div>
