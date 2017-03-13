@@ -9,13 +9,23 @@ var ctx = canvas.getContext("2d")
 
 var sort_counts = "" !== getCookie("sort_counts") ? (getCookie("sort_counts") === "true") : true
 
+$("input#sort-counts").prop("checked", sort_counts);
+
 var separate_with_lines = "" !== getCookie("separate_with_lines") ? (getCookie("separate_with_lines") === "true") : true
+$("input#separate-cells-w-lines").prop("checked", separate_with_lines);
 
 var hide_extinct_counts = "" !== getCookie("hide_extinct_counts") ? (getCookie("hide_extinct_counts") === "true") : true
 
+$("input#hide-extinct").prop("checked", hide_extinct_counts);
+
 var make_colors_distinct = "" !== getCookie("make_colors_distinct") ? (getCookie("make_colors_distinct") === "true") : true
 
+$("input#make-colors-distinct").prop("checked", make_colors_distinct);
+
 var chart_counts_enabled = "" !== getCookie("chart_counts_enabled") ? (getCookie("chart_counts_enabled") === "true") : true
+
+$("input#chart-counts").prop("checked", !chart_counts_enabled);
+
 
 ctx.strokeStyle = "#000000"
 ctx.lineWidth = 1
