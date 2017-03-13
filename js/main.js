@@ -26,6 +26,8 @@ var chart_counts_enabled = "" !== getCookie("chart_counts_enabled") ? (getCookie
 
 $("input#chart-counts").prop("checked", !chart_counts_enabled);
 
+$('#chartCanvas').toggle(chart_counts_enabled)
+
 
 ctx.strokeStyle = "#000000"
 ctx.lineWidth = 1
