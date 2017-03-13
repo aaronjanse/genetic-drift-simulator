@@ -457,10 +457,12 @@ $('input#chart-counts').change(function () {
 
 	$('#chartCanvas').toggle(chart_counts_enabled)
 
-	try {
-		chart.render()
-	} catch (e) {
+	if (chart_counts_enabled) {
+		try {
+			chart.render()
+		} catch (e) {
 
+		}
 	}
 
 	setCookie("chart_counts_enabled", !ischecked, 999)
