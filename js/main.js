@@ -74,9 +74,19 @@ function reset() {
 	for (var i = 0; i < population_size; i++) {
 		population.push(i)
 
+		var ratio = i / population_size
+
+		var hue;
+		if (make_colors_distinct) {
+			hue = (128 * (ratio + i))
+		} else {
+			hue = 255 * ratio
+		}
+
 		chart.options.data.push({
 			type: "line",
 			markerType: "none",
+			color: "hsl(" + hue + ", 100%, 50%)",
 			dataPoints: []
 		});
 	}
@@ -121,6 +131,8 @@ function run_auto() {
 
 	var speed = parseInt($('input#speed').val()) || 10
 	simulator_interval_id = setInterval(simulate_step, speed)
+
+	render()
 }
 
 function manual_step() {
@@ -131,6 +143,8 @@ function manual_step() {
 	for (var i = 0; i < num_of_gens_to_sim_this_step; i++) {
 		simulate_step()
 	}
+
+	render()
 }
 
 $('button#step').click(manual_step)
@@ -144,6 +158,8 @@ $("input#gens-per-step").on("keydown", function (e) {
 $('button#reset').click(function () {
 	set_button_unpause()
 	reset()
+
+	render()
 })
 
 $('button#pause').click(pause)
@@ -166,6 +182,8 @@ function unpause() {
 
 	reset_if_needed()
 	run_auto()
+
+	render()
 }
 
 function set_button_pause() {
@@ -227,8 +245,6 @@ function simulate_step() {
 		return a - b;
 	});
 
-	render()
-
 	phenotype_counts_text = ''
 
 	// NOTE: population_size is used to represent the total number of original phentoypes
@@ -238,14 +254,12 @@ function simulate_step() {
 		var id = phenotype_id_and_count.id
 		var count = phenotype_id_and_count.count
 
+		chart.options.data[id].dataPoints.push({
+			y: count
+		})
+
 		if (hide_extinct_counts && count == 0) {
 			continue
-		}
-
-		if (chart_counts_enabled) {
-			chart.options.data[id].dataPoints.push({
-				y: count
-			})
 		}
 
 		var number_str = '#' + id
@@ -267,7 +281,6 @@ function simulate_step() {
 	}
 
 	if (all_the_same || (number_of_gens_to_simulate != -1 && generation_number > number_of_gens_to_simulate)) {
-		// number_of_gens_to_simulate = generation_number
 		stop()
 	}
 }
@@ -277,35 +290,63 @@ function render() {
 		chart.render();
 	}
 
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
-
 	var width_per_cell = canvas.width / population_size
 
 	var last_phenotype = population[0]
+	var start_idx = 0
+
+	for (var i = 0; i < population_size; i++) {
+		var phenotype = population[i]
+		var last_was_different = last_phenotype != phenotype
+
+		if (last_was_different) {
+			var x = width_per_cell * i
+
+			var ratio = population[start_idx] / population_size
+
+			var hue;
+			if (make_colors_distinct) {
+				hue = (128 * (ratio + population[start_idx]))
+			} else {
+				hue = 255 * ratio
+			}
+
+			ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
+
+			ctx.fillRect(start_idx * width_per_cell, 0, width_per_cell * (i - start_idx) + 2, canvas.height)
+
+			start_idx = i
+
+			last_phenotype = phenotype
+		}
+	}
+
+	var ratio = population[start_idx] / population_size
+
+	var hue;
+	if (make_colors_distinct) {
+		hue = (128 * (ratio + population[start_idx]))
+	} else {
+		hue = 255 * ratio
+	}
+
+	ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
+
+	ctx.fillRect(start_idx * width_per_cell, 0, width_per_cell * (population_size - start_idx) + 2, canvas.height)
+
+
+
+	last_phenotype = population[0]
 
 	for (var i = 0; i < population_size; i++) {
 		var phenotype = population[i]
 
-		var ratio = phenotype / population_size
-
-		var hue;
-		if (make_colors_distinct) {
-			hue = (128 * (ratio + phenotype))
-		} else {
-			hue = 255 * ratio
-		}
-
-		ctx.fillStyle = "hsl(" + hue + ", 100%, 50%)"
-
 		var x = width_per_cell * i
-			// x = Math.floor(x)
-
-		ctx.fillRect(x, 0, width_per_cell + 2, canvas.height)
 
 		var last_was_different = last_phenotype != phenotype
 
 		if (last_was_different) {
-			ctx.lineWidth = 2
+			ctx.lineWidth = 3
 		}
 
 		if (separate_with_lines || last_was_different) {
@@ -321,6 +362,10 @@ function render() {
 		}
 
 		last_phenotype = phenotype
+	}
+
+	if (running) {
+		requestAnimationFrame(render)
 	}
 }
 
@@ -342,11 +387,34 @@ $('input#hide-extinct').change(function () {
 $('input#make-colors-distinct').change(function () {
 	var ischecked = $(this).is(":checked")
 	make_colors_distinct = ischecked
+
+	for (var i = 0; i < population_size; i++) {
+		var ratio = i / population_size
+
+		var hue;
+		if (make_colors_distinct) {
+			hue = (128 * (ratio + i))
+		} else {
+			hue = 255 * ratio
+		}
+
+		chart.options.data[i].color = "hsl(" + hue + ", 100%, 50%)"
+	}
+
+	chart.render()
+
+	render()
 });
 
 $('input#chart-counts').change(function () {
 	var ischecked = $(this).is(":checked")
-	chart_counts_enabled = ischecked
+	chart_counts_enabled = !ischecked
 
 	$('#chartCanvas').toggle(chart_counts_enabled)
+
+	try {
+		chart.render()
+	} catch (e) {
+
+	}
 });
