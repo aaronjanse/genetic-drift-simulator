@@ -7,15 +7,15 @@ canvas.style.height = "50px"
 
 var ctx = canvas.getContext("2d")
 
-var sort_counts = true
+var sort_counts = "" !== getCookie("sort_counts") ? (getCookie("sort_counts") === "true") : true
 
-var separate_with_lines = true
+var separate_with_lines = "" !== getCookie("separate_with_lines") ? (getCookie("separate_with_lines") === "true") : true
 
-var hide_extinct_counts = true
+var hide_extinct_counts = "" !== getCookie("hide_extinct_counts") ? (getCookie("hide_extinct_counts") === "true") : true
 
-var make_colors_distinct = true
+var make_colors_distinct = "" !== getCookie("make_colors_distinct") ? (getCookie("make_colors_distinct") === "true") : true
 
-var chart_counts_enabled = true
+var chart_counts_enabled = "" !== getCookie("chart_counts_enabled") ? (getCookie("chart_counts_enabled") === "true") : true
 
 ctx.strokeStyle = "#000000"
 ctx.lineWidth = 1
@@ -369,19 +369,50 @@ function render() {
 	}
 }
 
+// w3schools
+function setCookie(cname, cvalue, exdays) {
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+	var expires = "expires=" + d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+// w3schools
+function getCookie(cname) {
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
 $('input#sort-counts').change(function () {
 	var ischecked = $(this).is(":checked")
 	sort_counts = ischecked
+
+	setCookie("sort_counts", ischecked, 999)
 });
 
 $('input#separate-cells-w-lines').change(function () {
 	var ischecked = $(this).is(":checked")
 	separate_with_lines = ischecked
+
+	setCookie("separate_with_lines", ischecked, 999)
 });
 
 $('input#hide-extinct').change(function () {
 	var ischecked = $(this).is(":checked")
 	hide_extinct_counts = ischecked
+
+	setCookie("hide_extinct_counts", ischecked, 999)
 });
 
 $('input#make-colors-distinct').change(function () {
@@ -404,6 +435,8 @@ $('input#make-colors-distinct').change(function () {
 	chart.render()
 
 	render()
+
+	setCookie("make_colors_distinct", ischecked, 999)
 });
 
 $('input#chart-counts').change(function () {
@@ -417,4 +450,6 @@ $('input#chart-counts').change(function () {
 	} catch (e) {
 
 	}
-});
+
+	setCookie("chart_counts_enabled", !ischecked, 999)
+});;
