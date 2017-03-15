@@ -295,11 +295,23 @@ function simulate_step() {
 	if (all_the_same || (number_of_gens_to_simulate != -1 && generation_number > number_of_gens_to_simulate)) {
 		stop()
 	}
-}
 
-function render() {
+
 	if (chart_counts_enabled) {
 		chart.render();
+	}
+}
+
+var last_rendered_gen_num = -1
+
+function render() {
+	if (generation_number == last_rendered_gen_num) {
+		if (running) {
+			requestAnimationFrame(render)
+		}
+		return
+	} else {
+		last_rendered_gen_num = generation_number
 	}
 
 	var width_per_cell = canvas.width / population_size
